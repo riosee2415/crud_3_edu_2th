@@ -1,4 +1,6 @@
 import Board from "../models/Board";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const homeController = async (req, res) => {
   try {
@@ -16,10 +18,16 @@ export const detailController = async (req, res) => {
     query: { id },
   } = req;
 
+  const mode = process.env.NODE_ENV;
+
+  let IS_DEV = false;
+
+  if (mode === "develop") IS_DEV = true;
+
   try {
     const result = await Board.findOne({ _id: id });
 
-    res.render("detail", { data: result });
+    res.render("detail", { data: result, dev: IS_DEV });
   } catch (e) {
     console.log(e);
     homeController(req, res);
@@ -60,6 +68,56 @@ export const createBoardController = async (req, res) => {
   }
 };
 
-export const editController = (req, res) => {
-  res.render("edit");
+export const editController = async (req, res) => {
+  const {
+    query: { id },
+  } = req;
+
+  try {
+    const result = await Board.findOne({ _id: id });
+
+    res.render("edit", { data: result });
+  } catch (e) {
+    console.log(e);
+    homeController(req, res);
+  }
+};
+
+export const deleteBoardController = async (req, res) => {
+  const {
+    body: { id },
+  } = req;
+
+  try {
+    const result = await Board.deleteOne({ _id: id });
+
+    homeController(req, res);
+  } catch (error) {
+    console.log(error);
+    homeController(req, res);
+  }
+};
+
+export const editBoardController = async (req, res) => {
+  const {
+    body: { id, title, desc, author },
+  } = req;
+
+  try {
+    const result = await Board.updateOne(
+      { _id: id },
+      {
+        $set: {
+          title: title,
+          description: desc,
+          author: author,
+        },
+      }
+    );
+
+    homeController(req, res);
+  } catch (e) {
+    console.log(e);
+    homeController(req, res);
+  }
 };

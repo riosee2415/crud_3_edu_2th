@@ -18,3 +18,10 @@ block content
 
     form.listForm(action="/" method="GET")
         input(type="submit" value="LIST")
+    if dev 
+        form.deleteForm(action="/deleteBoard", method="POST")
+            input(type="hidden" name="id" value=data._id)
+            input(type="submit" value="Delete")
+        form.updateForm(action="/edit", method="GET")
+            input(type="hidden" name="id" value=data._id)
+            input(type="submit" value="Edit Page")
