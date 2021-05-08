@@ -4,10 +4,14 @@ import helmet from "helmet";
 import bodyParser from "body-parser";
 import path from "path";
 import boardRouter from "./routers/boardRouter";
+import connect from "../db";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
+connect();
 app.use(helmet());
 app.use(morgan(`dev`));
 app.set("view engine", "pug");
